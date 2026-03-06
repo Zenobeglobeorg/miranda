@@ -24,7 +24,7 @@ export function Footer() {
               />
             </div>
             <p className="text-sm leading-relaxed">
-              La plateforme officielle des épreuves de Prepare Vogt.
+              La plateforme officielle des épreuves de Prepas Vogt.
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>mirandaawoulebe@gmail.com</li>
               <li>+237 687 433 132</li>
-              <li>Prepare Vogt, Cameroun</li>
+              <li>Prepas Vogt, Cameroun</li>
             </ul>
           </div>
         </div>
