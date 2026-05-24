@@ -187,7 +187,7 @@ export default function AdminLayout({
       )}
 
       {/* ── Contenu principal ── */}
-      <div className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         {/* Topbar mobile */}
         <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 shadow-sm flex-shrink-0">
           <div className="flex items-center justify-between px-4 h-14">
@@ -209,7 +209,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page content — scroll interne */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-hidden flex flex-col">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto flex flex-col">
           {children}
         </main>
       </div>

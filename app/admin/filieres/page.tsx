@@ -24,7 +24,7 @@ export default async function FilieresPage() {
   })
 
   return (
-    <div className="flex flex-col h-full min-h-0 space-y-6">
+    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-0 space-y-6">
       <div className="flex-shrink-0">
         <h1 className="text-xl md:text-2xl font-bold text-slate-900">
           Filières & Niveaux

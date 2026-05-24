@@ -125,18 +125,25 @@ export default function SettingsForm({ settings }: Props) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50"
-      >
-        {loading ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <Save className="w-4 h-4" />
-        )}
-        {loading ? "Sauvegarde..." : "Sauvegarder"}
-      </button>
+      <div className="sticky bottom-0 bg-white border-t border-slate-100 pt-4 pb-2 z-20">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl font-semibold text-sm hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Sauvegarde...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              Sauvegarder
+            </>
+          )}
+        </button>
+      </div>
     </form>
   )
 }
