@@ -33,7 +33,7 @@ export default async function AdminEpreuvesPage() {
   }
 
   return (
-    <div className="flex flex-col h-full min-h-0 space-y-4 md:space-y-6">
+    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-0 space-y-4 md:space-y-6">
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-900">

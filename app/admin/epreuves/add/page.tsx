@@ -10,6 +10,7 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Save,
 } from "lucide-react"
 
 type Filiere = {
@@ -191,37 +192,41 @@ export default function AdminEpreuvesAddPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="w-full max-w-2xl mx-auto pb-24 md:pb-8">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6 flex-shrink-0">
         <Link
           href="/admin/epreuves"
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
+          className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Retour aux épreuves
+          <ArrowLeft className="w-5 h-5" />
         </Link>
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">
+            Ajouter une épreuve
+          </h1>
+          <p className="text-slate-400 text-sm">
+            Remplissez tous les champs requis
+          </p>
+        </div>
       </div>
 
-      <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-        <FileText className="h-6 w-6 text-slate-700" />
-        Ajouter une épreuve
-      </h1>
-
       {success && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-800 p-4 text-green-800 dark:text-green-200">
+        <div className="mb-6 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">
           <CheckCircle2 className="h-5 w-5 shrink-0" />
           <span>Épreuve créée. Redirection…</span>
         </div>
       )}
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-4 text-red-800 dark:text-red-200">
+        <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      {/* Formulaire scrollable */}
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-5 md:p-6 space-y-5">
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-1">Titre *</label>
           <input
@@ -232,7 +237,7 @@ export default function AdminEpreuvesAddPage() {
             placeholder="Ex. Mathématiques – Algèbre"
           />
           {fieldErrors.titre && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.titre}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.titre}</p>
           )}
         </div>
 
@@ -260,12 +265,12 @@ export default function AdminEpreuvesAddPage() {
               ))}
             </select>
             {!loadingFilieres && filieres.length === 0 && (
-              <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
+              <p className="mt-1 text-sm text-amber-600">
                 Aucune filière. Exécutez le script : npx tsx scripts/seed-filieres.ts
               </p>
             )}
             {fieldErrors.filiere && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.filiere}</p>
+              <p className="mt-1 text-sm text-red-600">{fieldErrors.filiere}</p>
             )}
           </div>
           <div>
@@ -302,7 +307,7 @@ export default function AdminEpreuvesAddPage() {
             ))}
           </select>
           {fieldErrors.matiere && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.matiere}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.matiere}</p>
           )}
         </div>
 
@@ -346,7 +351,7 @@ export default function AdminEpreuvesAddPage() {
             <Upload className="h-4 w-4 text-slate-400 shrink-0" />
           </div>
           {fieldErrors.fileEpreuve && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.fileEpreuve}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.fileEpreuve}</p>
           )}
         </div>
 
@@ -376,24 +381,28 @@ export default function AdminEpreuvesAddPage() {
           </label>
         </div>
 
-        <div className="flex gap-3 pt-4">
+        {/* Boutons — toujours visibles */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100 sticky bottom-0 bg-white pb-2 z-20">
           <button
             type="submit"
             disabled={submitLoading}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:shadow-lg"
           >
             {submitLoading ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Enregistrement…
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Enregistrement...
               </>
             ) : (
-              "Enregistrer l'épreuve"
+              <>
+                <Save className="w-4 h-4" />
+                Enregistrer l'épreuve
+              </>
             )}
           </button>
           <Link
             href="/admin/epreuves"
-            className="inline-flex items-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition-all duration-200"
           >
             Annuler
           </Link>
