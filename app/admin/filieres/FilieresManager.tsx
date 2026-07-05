@@ -8,7 +8,8 @@ import {
   ajouterNiveauFiliere,
   supprimerNiveauFiliere,
   creerFiliere,
-  creerNiveau
+  creerNiveau,
+  supprimerFiliere
 } from "./actions"
 import { toast } from "@/components/ui/Toast"
 
@@ -130,6 +131,27 @@ export default function FilieresManager({
       setNewNiveau({ numero: "", label: "" })
       window.location.reload()
     }
+  }
+
+  async function handleSupprimerFiliere(
+    filiereId: string,
+    code: string
+  ) {
+    if (!confirm(
+      `Supprimer la filière "${code}" ?\n\n` +
+      `ATTENTION : Toutes les épreuves et ` +
+      `niveaux associés seront supprimés.`
+    )) return
+
+    setLoadingId(filiereId)
+    const result = await supprimerFiliere(filiereId)
+    if (result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success(`Filière ${code} supprimée`)
+      window.location.reload()
+    }
+    setLoadingId(null)
   }
 
   return (
@@ -305,11 +327,11 @@ export default function FilieresManager({
             <div key={filiere.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
               
               {/* Header filière */}
-              <button
+              <div
                 onClick={() => setExpanded(
                   isExpanded ? null : filiere.id
                 )}
-                className="w-full flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors duration-150"
+                className="w-full flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors duration-150 cursor-pointer"
               >
                 <div className="w-1 h-10 rounded-full flex-shrink-0"
                   style={{ 
@@ -344,11 +366,28 @@ export default function FilieresManager({
                   {filiere.filiereNiveaux.length} niveau(x)
                 </span>
 
+                {/* Bouton supprimer filière */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSupprimerFiliere(filiere.id, filiere.code)
+                  }}
+                  disabled={loadingId === filiere.id}
+                  className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 flex-shrink-0 disabled:opacity-50"
+                  title="Supprimer cette filière"
+                >
+                  {loadingId === filiere.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                </button>
+
                 {isExpanded 
                   ? <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0" />
                   : <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 }
-              </button>
+              </div>
 
               {/* Panel expandé */}
               {isExpanded && (

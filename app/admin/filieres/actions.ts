@@ -109,3 +109,55 @@ export async function creerNiveau(data: {
     return { error: "Erreur lors de la création" }
   }
 }
+
+export async function supprimerFiliere(
+  filiereId: string
+) {
+  await requireAdmin()
+  try {
+    // 1. Récupère tous les filiereNiveaux
+    const filiereNiveaux = await prisma
+      .filiereNiveau.findMany({
+        where: { filiereId },
+        select: { id: true }
+      })
+    
+    const filiereNiveauIds = filiereNiveaux
+      .map(fn => fn.id)
+
+    // 2. Supprime les downloads liés
+    await prisma.download.deleteMany({
+      where: { 
+        epreuve: { 
+          filiereNiveauId: { 
+            in: filiereNiveauIds 
+          } 
+        } 
+      }
+    })
+
+    // 3. Supprime les épreuves liées
+    await prisma.epreuve.deleteMany({
+      where: { 
+        filiereNiveauId: { in: filiereNiveauIds } 
+      }
+    })
+
+    // 4. Supprime les filiereNiveaux
+    await prisma.filiereNiveau.deleteMany({
+      where: { filiereId }
+    })
+
+    // 5. Supprime la filière
+    await prisma.filiere.delete({
+      where: { id: filiereId }
+    })
+
+    revalidatePath("/admin/filieres")
+    revalidatePath("/epreuves")
+    return { success: true }
+  } catch (err) {
+    console.error(err)
+    return { error: "Erreur lors de la suppression" }
+  }
+}

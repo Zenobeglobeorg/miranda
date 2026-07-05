@@ -33,21 +33,21 @@ export default async function AdminUtilisateursPage() {
   )
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-0 space-y-4 md:space-y-6">
-      <div className="flex items-center justify-between flex-shrink-0">
+    <div className="w-full space-y-4 md:space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+          <h1 className="text-lg md:text-2xl font-bold text-slate-900">
             Utilisateurs
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
+          <p className="text-slate-400 text-xs md:text-sm mt-0.5">
             {utilisateurs.length} utilisateur(s) au total
           </p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="overflow-auto flex-1">
-          <table className="w-full text-sm min-w-[650px]">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[600px]">
             <thead className="sticky top-0 bg-white z-10 border-b border-slate-100">
               <tr>
                 <th className="text-left px-4 md:px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
@@ -62,7 +62,7 @@ export default async function AdminUtilisateursPage() {
                 <th className="text-left px-4 md:px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
                   Abonnement
                 </th>
-                <th className="text-left px-4 md:px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
+                <th className="hidden md:table-cell text-left px-4 md:px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
                   Inscrit le
                 </th>
                 <th className="text-right px-4 md:px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
@@ -109,7 +109,7 @@ export default async function AdminUtilisateursPage() {
                         {abonnementActif ? "Actif" : "Inactif"}
                       </span>
                     </td>
-                    <td className="px-4 md:px-5 py-3.5 text-slate-600 whitespace-nowrap">
+                    <td className="hidden md:table-cell px-4 md:px-5 py-3.5 text-slate-600 whitespace-nowrap">
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="px-4 md:px-5 py-3.5 text-right whitespace-nowrap">
@@ -125,13 +125,14 @@ export default async function AdminUtilisateursPage() {
             </tbody>
           </table>
 
-          {utilisateurs.length === 0 && (
-            <div className="text-center py-16 text-slate-400">
-              <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">Aucun utilisateur</p>
-            </div>
-          )}
         </div>
+
+        {utilisateurs.length === 0 && (
+          <div className="text-center py-16 text-slate-400">
+            <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <p className="text-sm">Aucun utilisateur</p>
+          </div>
+        )}
       </div>
     </div>
   )
