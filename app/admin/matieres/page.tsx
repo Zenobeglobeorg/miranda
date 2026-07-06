@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/auth/helpers"
 import { BookMarked } from "lucide-react"
 import { AddMatiereForm } from "./add-matiere-form"
 import { EditMatiereInline } from "./edit-matiere-inline"
-import { DeleteMatiereButton } from "./delete-matiere-button"
+import DeleteMatiereButton from "@/components/admin/DeleteMatiereButton"
 
 export const dynamic = "force-dynamic"
 
@@ -27,13 +27,13 @@ export default async function AdminMatieresPage() {
   )
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-0 space-y-4 md:space-y-6">
-      <div className="flex items-center justify-between flex-shrink-0">
+    <div className="w-full space-y-4 md:space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+          <h1 className="text-lg md:text-2xl font-bold text-slate-900">
             Matières
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
+          <p className="text-slate-400 text-xs md:text-sm mt-0.5">
             Gérer les matières par filière
           </p>
         </div>
@@ -41,8 +41,8 @@ export default async function AdminMatieresPage() {
 
       <AddMatiereForm filieres={filieres} />
 
-      <div className="bg-white rounded-2xl shadow-sm flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="overflow-auto flex-1">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[500px]">
             <thead className="sticky top-0 bg-white z-10 border-b border-slate-100">
               <tr>
@@ -83,24 +83,27 @@ export default async function AdminMatieresPage() {
                     {m._count.epreuves}
                   </td>
                   <td className="px-4 md:px-5 py-3.5 text-right whitespace-nowrap">
-                    <DeleteMatiereButton
-                      matiereId={m.id}
-                      matiereNom={m.nom}
-                      epreuvesCount={m._count.epreuves}
-                    />
+                    <div className="flex items-center justify-end gap-2">
+                      <DeleteMatiereButton
+                        id={m.id}
+                        nom={m.nom}
+                        hasEpreuves={m._count.epreuves > 0}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {matieres.length === 0 && (
-            <div className="text-center py-16 text-slate-400">
-              <BookMarked className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">Aucune matière. Ajoutez-en une ci-dessus.</p>
-            </div>
-          )}
         </div>
+
+        {matieres.length === 0 && (
+          <div className="text-center py-16 text-slate-400">
+            <BookMarked className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <p className="text-sm">Aucune matière. Ajoutez-en une ci-dessus.</p>
+          </div>
+        )}
       </div>
     </div>
   )

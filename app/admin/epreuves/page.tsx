@@ -33,28 +33,30 @@ export default async function AdminEpreuvesPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-0 space-y-4 md:space-y-6">
-      <div className="flex items-center justify-between flex-shrink-0">
+    <div className="w-full space-y-4 md:space-y-6">
+      {/* Header responsive */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+          <h1 className="text-lg md:text-2xl font-bold text-slate-900">
             Épreuves
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
-            {epreuves.length} épreuve(s) au total
+          <p className="text-slate-400 text-xs md:text-sm mt-0.5">
+            {epreuves.length} épreuve(s)
           </p>
         </div>
         <Link
           href="/admin/epreuves/add"
-          className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-700 transition-all duration-200 whitespace-nowrap"
+          className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-slate-900 text-white rounded-xl text-xs md:text-sm font-medium hover:bg-slate-700 transition-all duration-200 whitespace-nowrap"
         >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Ajouter</span>
+          <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+          Ajouter
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col min-h-0 flex-1">
-        <div className="overflow-auto flex-1">
-          <table className="w-full text-sm min-w-[750px]">
+      {/* Table avec scroll horizontal */}
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[700px]">
             <thead className="border-b border-slate-100 bg-white sticky top-0 z-10">
               <tr>
                 {["Titre", "Filière", "Niveau", "Matière", "Type", "Accès", "Corrigé", "Actions"].map((h) => (
@@ -148,20 +150,14 @@ export default async function AdminEpreuvesPage() {
             </tbody>
           </table>
 
-          {epreuves.length === 0 && (
-            <div className="text-center py-16 text-slate-400">
-              <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">Aucune épreuve publiée</p>
-              <Link
-                href="/admin/epreuves/add"
-                className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-700 transition-all duration-200"
-              >
-                <Plus className="w-4 h-4" />
-                Ajouter une épreuve
-              </Link>
-            </div>
-          )}
         </div>
+
+        {epreuves.length === 0 && (
+          <div className="text-center py-16 text-slate-400">
+            <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <p className="text-sm">Aucune épreuve</p>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
+import { toast } from "@/components/ui/Toast"
 import {
   ArrowLeft,
   FileText,
@@ -167,6 +168,8 @@ export default function AdminEpreuvesAddPage() {
         isGratuit: isGratuit,
         isPublished: true,
         filiereNiveauId,
+        filiereCode,
+        niveauNumero: niveau,
         matiereId,
       }
 
@@ -177,14 +180,21 @@ export default function AdminEpreuvesAddPage() {
         body: JSON.stringify(payload),
       })
       const createData = await createRes.json()
+      console.log("Réponse API:", createData)
+
       if (!createRes.ok) {
-        const errMsg = createData?.error?.formErrors?.[0] ?? createData?.error ?? "Erreur lors de la création"
-        throw new Error(typeof errMsg === "string" ? errMsg : "Erreur création épreuve")
+        const errMsg = createData?.error?.formErrors?.[0] ?? createData?.error ?? "Erreur lors de l'ajout"
+        toast.error(typeof errMsg === "string" ? errMsg : "Erreur lors de l'ajout")
+        setError(typeof errMsg === "string" ? errMsg : "Erreur création épreuve")
+        setSubmitLoading(false)
+        return
       }
 
+      toast.success("Épreuve créée avec succès !")
       setSuccess(true)
       setTimeout(() => router.push("/admin/epreuves"), 1500)
     } catch (err) {
+      console.error("Erreur soumission formulaire:", err)
       setError(err instanceof Error ? err.message : "Une erreur est survenue")
     } finally {
       setSubmitLoading(false)
@@ -194,7 +204,7 @@ export default function AdminEpreuvesAddPage() {
   return (
     <div className="w-full max-w-2xl mx-auto pb-24 md:pb-8">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6 flex-shrink-0">
+      <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin/epreuves"
           className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200"
@@ -202,10 +212,10 @@ export default function AdminEpreuvesAddPage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-lg md:text-xl font-bold text-slate-900">
             Ajouter une épreuve
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-400 text-xs md:text-sm">
             Remplissez tous les champs requis
           </p>
         </div>
@@ -225,15 +235,14 @@ export default function AdminEpreuvesAddPage() {
         </div>
       )}
 
-      {/* Formulaire scrollable */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-5 md:p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-4 md:p-6 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">Titre *</label>
+          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Titre *</label>
           <input
             type="text"
             value={titre}
             onChange={(e) => setTitre(e.target.value)}
-            className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200"
             placeholder="Ex. Mathématiques – Algèbre"
           />
           {fieldErrors.titre && (
@@ -241,9 +250,9 @@ export default function AdminEpreuvesAddPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Filière *</label>
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Filière *</label>
             <select
               value={filiereCode}
               onChange={(e) => {
@@ -255,7 +264,7 @@ export default function AdminEpreuvesAddPage() {
                 }
               }}
               disabled={loadingFilieres}
-              className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 disabled:opacity-50"
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200 disabled:opacity-50"
             >
               <option value="">Choisir une filière</option>
               {filieres.map((f) => (
@@ -274,12 +283,12 @@ export default function AdminEpreuvesAddPage() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Niveau *</label>
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Niveau *</label>
             <select
               value={niveau}
               onChange={(e) => setNiveau(Number(e.target.value))}
               disabled={!filiereCode}
-              className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 disabled:opacity-50"
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200 disabled:opacity-50"
             >
               {!filiereCode && <option value="">Choisir d'abord une filière</option>}
               {selectedFiliere?.filiereNiveaux.map((fn) => (
@@ -292,12 +301,12 @@ export default function AdminEpreuvesAddPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">Matière *</label>
+          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Matière *</label>
           <select
             value={matiereId}
             onChange={(e) => setMatiereId(e.target.value)}
             disabled={!filiereCode || loadingMatieres}
-            className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 disabled:opacity-50"
+            className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200 disabled:opacity-50"
           >
             <option value="">Choisir une matière</option>
             {matieres.map((m) => (
@@ -311,13 +320,13 @@ export default function AdminEpreuvesAddPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Type *</label>
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Type *</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as (typeof TYPES_EPREUVE)[number]["value"])}
-              className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200"
             >
               {TYPES_EPREUVE.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -327,28 +336,29 @@ export default function AdminEpreuvesAddPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Année</label>
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Année</label>
             <input
               type="number"
               value={annee}
               onChange={(e) => setAnnee(Number(e.target.value) || new Date().getFullYear())}
               min={2000}
               max={2100}
-              className="w-full rounded-xl bg-white ring-1 ring-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm text-slate-900 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all duration-200"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">Fichier épreuve PDF *</label>
-          <div className="flex items-center gap-2">
+          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+            Fichier épreuve PDF *
+          </label>
+          <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-slate-400 transition-all duration-200">
             <input
               type="file"
               accept=".pdf"
               onChange={(e) => setFileEpreuve(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-slate-500 file:mr-4 file:rounded file:border file:border-slate-200 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-slate-900"
+              className="w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-700 file:cursor-pointer"
             />
-            <Upload className="h-4 w-4 text-slate-400 shrink-0" />
           </div>
           {fieldErrors.fileEpreuve && (
             <p className="mt-1 text-sm text-red-600">{fieldErrors.fileEpreuve}</p>
@@ -356,15 +366,16 @@ export default function AdminEpreuvesAddPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">Fichier corrigé PDF (optionnel)</label>
-          <div className="flex items-center gap-2">
+          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+            Fichier corrigé PDF (optionnel)
+          </label>
+          <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-slate-400 transition-all duration-200">
             <input
               type="file"
               accept=".pdf"
               onChange={(e) => setFileCorrige(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-slate-500 file:mr-4 file:rounded file:border file:border-slate-200 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-slate-900"
+              className="w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-700 file:cursor-pointer"
             />
-            <Upload className="h-4 w-4 text-slate-400 shrink-0" />
           </div>
         </div>
 
@@ -374,19 +385,19 @@ export default function AdminEpreuvesAddPage() {
             id="isGratuit"
             checked={isGratuit}
             onChange={(e) => setIsGratuit(e.target.checked)}
-            className="rounded border-input"
+            className="rounded border-slate-300 text-slate-900 focus:ring-slate-900"
           />
           <label htmlFor="isGratuit" className="text-sm font-medium text-slate-700">
             Épreuve gratuite
           </label>
         </div>
 
-        {/* Boutons — toujours visibles */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100 sticky bottom-0 bg-white pb-2 z-20">
+        {/* Boutons sticky mobile */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
           <button
             type="submit"
             disabled={submitLoading}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:shadow-lg"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl font-semibold text-sm hover:shadow-lg transition-all duration-200 disabled:opacity-50"
           >
             {submitLoading ? (
               <>
@@ -396,7 +407,7 @@ export default function AdminEpreuvesAddPage() {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Enregistrer l'épreuve
+                Enregistrer
               </>
             )}
           </button>

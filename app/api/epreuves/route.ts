@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { withDB } from "@/lib/db"
 import { requireAdmin } from "@/lib/auth/helpers"
 import { z } from "zod"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 
 const createEpreuveSchema = z.object({
   titre: z.string().min(1),
@@ -58,34 +60,103 @@ export async function GET(req: Request) {
 // POST /api/epreuves
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin()
+    const session = await auth()
+    console.log("Session:", session?.user?.role)
+
+    if (!session?.user) {
+      console.log("❌ Non authentifié")
+      return NextResponse.json(
+        { error: "Non authentifié" }, 
+        { status: 401 }
+      )
+    }
+
     const body = await req.json()
-    const data = createEpreuveSchema.parse(body)
+    console.log("Body reçu:", JSON.stringify(body))
+
+    // Vérifie filiereCode et niveauNumero
+    if (!body.filiereCode || !body.niveauNumero) {
+      console.log("❌ Filière ou niveau manquant")
+      return NextResponse.json(
+        { error: "Filière et niveau requis" },
+        { status: 400 }
+      )
+    }
+
+    // Cherche filiereNiveau
+    const filiereNiveau = await withDB((db) =>
+      db.filiereNiveau.findFirst({
+        where: {
+          filiere: { 
+            code: body.filiereCode.toUpperCase() 
+          },
+          niveau: { 
+            numero: parseInt(body.niveauNumero) 
+          }
+        },
+        include: {
+          filiere: true,
+          niveau: true
+        }
+      })
+    )
+
+    console.log("FiliereNiveau trouvé:", 
+      filiereNiveau?.id ?? "❌ NON TROUVÉ")
+
+    if (!filiereNiveau) {
+      return NextResponse.json(
+        { 
+          error: `Filière "${body.filiereCode}" ` +
+            `niveau ${body.niveauNumero} introuvable` 
+        },
+        { status: 404 }
+      )
+    }
+
+    // Vérifie matiereId
+    if (!body.matiereId) {
+      console.log("❌ Matière manquante")
+      return NextResponse.json(
+        { error: "Matière requise" },
+        { status: 400 }
+      )
+    }
+
+    // Vérifie fichierEpreuve
+    if (!body.fichierEpreuve) {
+      console.log("❌ Fichier épreuve manquant")
+      return NextResponse.json(
+        { error: "Fichier épreuve requis" },
+        { status: 400 }
+      )
+    }
 
     const epreuve = await withDB((db) =>
       db.epreuve.create({
         data: {
-          titre: data.titre,
-          type: data.type,
-          fichierEpreuve: data.fichierEpreuve,
-          fichierCorrige: data.fichierCorrige ?? null,
-          isGratuit: data.isGratuit,
-          isPublished: data.isPublished ?? true,
-          filiereNiveauId: data.filiereNiveauId,
-          matiereId: data.matiereId,
-        },
-        include: {
-          filiereNiveau: { include: { filiere: true, niveau: true } },
-          matiere: true,
-        },
+          titre: body.titre ?? 
+            `${body.filiereCode} - ${body.type}`,
+          type: body.type,
+          fichierEpreuve: body.fichierEpreuve,
+          fichierCorrige: body.fichierCorrige ?? null,
+          isGratuit: body.isGratuit ?? false,
+          isPublished: true,
+          filiereNiveauId: filiereNiveau.id,
+          matiereId: body.matiereId,
+        }
       })
     )
+
+    console.log("✅ Épreuve créée:", epreuve.id)
     return NextResponse.json(epreuve)
-  } catch (e) {
-    if (e instanceof z.ZodError) {
-      return NextResponse.json({ error: e.flatten() }, { status: 400 })
-    }
-    if (e instanceof Response) return e
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 })
+
+  } catch (err) {
+    console.error("❌ Erreur création épreuve:", err)
+    return NextResponse.json(
+      { error: "Erreur serveur: " + 
+        (err as Error).message },
+      { status: 500 }
+    )
   }
 }

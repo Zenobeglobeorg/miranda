@@ -43,6 +43,22 @@ export async function updateMatiere(id: string, formData: FormData) {
 
 export async function deleteMatiere(id: string) {
   await requireAdmin()
-  await withDB((db) => db.matiere.delete({ where: { id } }))
-  revalidatePath("/admin/matieres")
+  try {
+    const count = await withDB((db) =>
+      db.epreuve.count({
+        where: { matiereId: id }
+      })
+    )
+    if (count > 0) {
+      return { 
+        error: `Cette matière a ${count} épreuve(s). Supprimez-les d'abord.` 
+      }
+    }
+
+    await withDB((db) => db.matiere.delete({ where: { id } }))
+    revalidatePath("/admin/matieres")
+    return { success: true }
+  } catch {
+    return { error: "Erreur lors de la suppression" }
+  }
 }
