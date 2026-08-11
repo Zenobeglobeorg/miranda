@@ -71,7 +71,7 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
         >
-          <Image src="/heros.jpg" alt="Étudiants apprenant ensemble" width={540} height={240} className="rounded-2xl w-full max-w-md md:max-w-lg object-cover" />
+          <Image src="/herosec.jpg" alt="Étudiants apprenant ensemble" width={540} height={240} className="rounded-2xl w-full max-w-md md:max-w-lg object-cover" />
         </motion.div>
       </section>
 
@@ -130,7 +130,8 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-slate-200/50 to-transparent flex items-center justify-center">
-                <GraduationCap className="h-32 w-32 text-slate-400" />
+                <Image src="/ecole.jpg" alt="École" width={540} height={540} className="rounded-2xl w-full max-w-md md:max-w-lg object-cover object-top rounded-md" />
+
               </div>
             </motion.div>
           </div>
