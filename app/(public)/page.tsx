@@ -94,7 +94,7 @@ export default function Home() {
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">À propos de Miranda & Saint Jean</h2>
               <p className="text-slate-600 text-lg leading-relaxed">
                 Née de l'excellence académique de <strong>Saint Jean</strong>, cette application a été conçue pour offrir aux élèves un accès illimité aux ressources pédagogiques.
-                Que vous soyez en Niveau 1 ou Niveau 2, nous centralisons toutes les épreuves passées pour faciliter vos révisions.
+                Que vous soyez en Niveau 1 ou Niveau 5, nous centralisons toutes les épreuves passées pour faciliter vos révisions.
               </p>
               <ul className="space-y-3 text-slate-900">
                 <li className="flex items-center gap-3">

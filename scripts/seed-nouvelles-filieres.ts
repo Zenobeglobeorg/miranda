@@ -88,7 +88,7 @@ async function main() {
       ]
     },
     {
-      code: "CPJE",
+      code: "CPGE",
       nom: "Classes Préparatoires aux Grandes Écoles",
       couleur: "#10B981", // emerald
       isActive: true,
